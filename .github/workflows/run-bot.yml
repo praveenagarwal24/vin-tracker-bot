@@ -9,17 +9,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: |
+
+      - name: Install dependencies
+        run: |
           npm init -y
           npm install playwright
           npx playwright install chromium --with-deps
-      - run: node screenshot.js
-      - name: Upload to Slack
-        uses: adrey/slack-file-upload-action@master
+
+      - name: Take screenshot
+        run: node screenshot.js
+
+      - name: Upload screenshot to Slack
+        uses: slackapi/slack-github-action@v2.0.0
         with:
+          method: files.uploadV2
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          path: dashboard.png
-          channel: C0ATMA8EZJ9
+          payload: |
+            channel_id: C0ATMA8EZJ9
+            initial_comment: "📊 VIN Tracker Dashboard update"
+            file: "./dashboard.png"
+            filename: "dashboard.png"
