@@ -18,8 +18,12 @@ jobs:
           npx playwright install chromium --with-deps
       - run: node screenshot.js
       - name: Upload to Slack
-        uses: vaporif/slack-file-upload-action@v1
+        uses: slackapi/slack-github-action@v1.26.0
         with:
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
-          files: '["dashboard.png"]'
-          channel_id: 'C0ATMA8EZJ9'
+          channel-id: 'C0ATMA8EZJ9'
+          payload: |
+            {
+              "text": "VIN Tracker Dashboard Update"
+            }
+          # Note: Simple webhooks/actions sometimes struggle with images.
+          # If the first fix works, stick with it!
