@@ -17,9 +17,9 @@ jobs:
           npm install playwright
           npx playwright install chromium --with-deps
       - run: node screenshot.js
-      - name: Upload to Slack
+     - name: Upload to Slack
         uses: vaporif/slack-file-upload-action@v1
         with:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          path: dashboard.png
+          files: dashboard.png
           channel_id: 'C0ATMA8EZJ9'
