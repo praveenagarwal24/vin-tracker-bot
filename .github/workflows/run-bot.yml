@@ -21,9 +21,5 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C0ATMA8EZJ9'
-          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          payload: |
-            {
-              "text": "VIN Tracker Dashboard Update"
-            }
-          file-path: "./dashboard.png"
+          slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload-file-path: "./dashboard.png"
