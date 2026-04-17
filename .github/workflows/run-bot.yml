@@ -18,9 +18,8 @@ jobs:
           npx playwright install chromium --with-deps
       - run: node screenshot.js
       - name: Upload to Slack
-        run: |
-          curl -F file=@dashboard.png \
-               -F "initial_comment=VIN Tracker Dashboard Update" \
-               -F channels=C0ATMA8EZJ9 \
-               -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-               https://slack.com/api/files.upload
+        uses: adrey/slack-file-upload-action@master
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          path: dashboard.png
+          channel: C0ATMA8EZJ9
