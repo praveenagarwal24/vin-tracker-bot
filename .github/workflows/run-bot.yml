@@ -21,5 +21,5 @@ jobs:
         uses: vaporif/slack-file-upload-action@v1
         with:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          files: dashboard.png
+          files: '["dashboard.png"]'
           channel_id: 'C0ATMA8EZJ9'
