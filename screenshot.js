@@ -20,17 +20,22 @@ jobs:
       - name: Check if this slot already ran
         id: check
         run: |
-          # Current 2-hour slot identifier, e.g. "2026-04-22-14"
-          SLOT=$(date -u +'%Y-%m-%d-%H' | sed 's/..$//')
-          SLOT="${SLOT}$(( $(date -u +%H) / 2 * 2 ))"
-          echo "slot=$SLOT" >> $GITHUB_OUTPUT
+          # Build a slot ID like "2026-04-22-14" where hour is rounded down to even
+          DATE=$(date -u +'%Y-%m-%d')
+          HOUR=$(date -u +'%H')
+          # Strip leading zero so bash doesn't treat "08"/"09" as octal
+          HOUR=$((10#$HOUR))
+          SLOT_HOUR=$(( HOUR / 2 * 2 ))
+          SLOT=$(printf '%s-%02d' "$DATE" "$SLOT_HOUR")
+          echo "Current slot: $SLOT"
+          echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
 
           mkdir -p .state
           if [ -f ".state/last_slot" ] && [ "$(cat .state/last_slot)" = "$SLOT" ]; then
-            echo "already_ran=true" >> $GITHUB_OUTPUT
+            echo "already_ran=true" >> "$GITHUB_OUTPUT"
             echo "Slot $SLOT already completed — skipping."
           else
-            echo "already_ran=false" >> $GITHUB_OUTPUT
+            echo "already_ran=false" >> "$GITHUB_OUTPUT"
             echo "Slot $SLOT not yet done — proceeding."
           fi
 
@@ -74,5 +79,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .state/last_slot
-          git commit -m "chore: mark slot ${{ steps.check.outputs.slot }} complete [skip ci]" || exit 0
+          git diff --staged --quiet || git commit -m "chore: mark slot ${{ steps.check.outputs.slot }} complete [skip ci]"
           git push
